@@ -13,7 +13,7 @@ typedef int intv;
 /// CLASS CELL
 class cell{
     public:
-        cell() : unknown(true), value(0) {}
+        cell(int _x, int _y) : unknown(true), value(0), x(_x), y(_y) {}
         void set(intv v);
         intv get();
         bool isUnknown();
@@ -21,13 +21,19 @@ class cell{
     private:
         bool unknown;
         intv value;
+        int x, y;
 };
 
 /// CLASS PYRAMID
 class pyramid{
     public:
-        pyramid(int n){ data.resize(n); forn(i, n)  data[i].resize(i+1); }
-        bool canSolve();
+        pyramid(int n) : data(n) {
+            forn(x, n){
+                  data[x].reserve(x+1);
+                  forn(y, x+1) data[x].emplace_back(x,y);
+            }
+        }
+        bool isSolved();
         bool solve();
         string toString();
         cell& at(int x, int y);
@@ -66,6 +72,24 @@ bool cell::isUnknown(){
 }
 
 /// PYRAMID METHODS
+
+bool pyramid::isSolved(){
+    for(auto &row : data)
+        for(auto &c : row)
+            if( c.isUnknown() ) return false;
+    /// check forall cell that it's the sum of the others
+}
+
+bool pyramid::solve(){
+    queue<cell*> Q;
+    for(auto &row : data)
+        for(auto &c : row)
+            if( !c.isUnknown() ) Q.push( &c );
+    while( Q.size() ){
+        /// update cells
+    }
+}
+
 /* toString: returns a string representation of the pyramid */
 string pyramid::toString(){
     stringstream s;
