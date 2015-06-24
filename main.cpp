@@ -33,8 +33,8 @@ int main(){
 
 /** 
     Otra forma:
-- Asignarle a cada casilla los numeros del 1 al f(n)=f(n-1)+n numerando desde arriba hacia abajo, 
-    siempre de izquierda a derecha (con f(1)=1)
+- Asignarle a cada casilla los numeros del 1 al n(n+1)/2 numerando desde arriba hacia abajo, 
+    siempre de izquierda a derecha
 - Asignarle un nivel 'y' a cada casilla, tal que la fila del 1 tenga nivel y=1,
     la segunda fila con y=2, y así sucesivamente hasta la última con y=n
 - Para algana casilla con número 'x' en la pirámide, sus hijos son (x+y) y (x+y+1)
