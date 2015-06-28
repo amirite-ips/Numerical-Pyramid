@@ -28,6 +28,7 @@ class cell{
 class pyramid{
     public:
         pyramid(int n) : data(n) {
+            base = n;
             forn(x, n){
                   data[x].reserve(x+1);
                   forn(y, x+1) data[x].emplace_back(x,y);
@@ -39,14 +40,17 @@ class pyramid{
         cell& at(int x, int y);
 
     private:
+        int base;
         vector<vector<cell>> data;
 };
 
 /// MAIN FUNCTION
 int main(){
-    pyramid *A = new pyramid(6);
+    int n = 6;
+    pyramid *A = new pyramid(n);
 
-    A->at(3,1).set(43210);
+    forn(i, n)
+    A->at(n-1, i).set(i+1);
 
     cout<<A->toString()<<endl;
 
@@ -72,12 +76,13 @@ bool cell::isUnknown(){
 }
 
 /// PYRAMID METHODS
-
 bool pyramid::isSolved(){
     for(auto &row : data)
         for(auto &c : row)
             if( c.isUnknown() ) return false;
     /// check forall cell that it's the sum of the others
+
+    return true;
 }
 
 bool pyramid::solve(){
@@ -85,18 +90,26 @@ bool pyramid::solve(){
     for(auto &row : data)
         for(auto &c : row)
             if( !c.isUnknown() ) Q.push( &c );
+
+    cell *K;
     while( Q.size() ){
         /// update cells
+        K = Q.front();
+
+        if( K. )
     }
 }
 
 /* toString: returns a string representation of the pyramid */
 string pyramid::toString(){
+    int i = base;
+    int space = 6;
     stringstream s;
+
     for(auto& row : data){
+        s.width( (i--) * ((space+1) / 2 ) ), s << ' ';
         forn(i, row.size()){
-            if( i ) s<<' ';
-            s.width(5), s<<row[i].get();
+            s.width( space ), s<<row[i].get();
         }
         s<<endl;
     }
