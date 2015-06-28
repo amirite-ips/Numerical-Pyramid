@@ -2,6 +2,7 @@
 #include <vector>
 #include <sstream>
 #include <queue>
+#include <tuple>
 #define forn(a,b) for(int (a)=0; (a)<(int)(b); ++(a))
 using namespace std;
 typedef int intv;
@@ -16,6 +17,7 @@ class cell{
         cell(int _x, int _y) : unknown(true), value(0), x(_x), y(_y) {}
         void set(intv v);
         intv get();
+        tuple<int, int> getCoordinates();
         bool isUnknown();
 
     private:
@@ -46,12 +48,13 @@ class pyramid{
 
 /// MAIN FUNCTION
 int main(){
-    int n = 6;
+    int n = 9;
     pyramid *A = new pyramid(n);
 
     forn(i, n)
     A->at(n-1, i).set(i+1);
 
+    cout<<"The pyramid is "<<( A->isSolved() ? "" : "not" )<<" solved"<<endl;
     cout<<A->toString()<<endl;
 
     return 0;
@@ -70,6 +73,10 @@ intv cell::get(){
     return value;
 }
 
+tuple<int, int> cell::getCoordinates(){
+    return make_tuple(x, y);
+}
+
 /* isUnknown: returns whether the cell's value has been resolved */
 bool cell::isUnknown(){
     return unknown;
@@ -77,11 +84,15 @@ bool cell::isUnknown(){
 
 /// PYRAMID METHODS
 bool pyramid::isSolved(){
+    int x, y;
     for(auto &row : data)
-        for(auto &c : row)
+        for(auto &c : row){
             if( c.isUnknown() ) return false;
-    /// check forall cell that it's the sum of the others
-
+            tie(x, y) = c.getCoordinates();
+            if( x < base )
+                if( c.get() != this->at(x+1,y).get() + this->at(x+1,y+1).get() )
+                    return false;
+        }
     return true;
 }
 
@@ -91,26 +102,24 @@ bool pyramid::solve(){
         for(auto &c : row)
             if( !c.isUnknown() ) Q.push( &c );
 
-    cell *K;
+    int x, y;
     while( Q.size() ){
-        /// update cells
-        K = Q.front();
+        cell *c = Q.front();
+        tie(x, y) = c->getCoordinates();
 
-        if( K. )
     }
 }
 
 /* toString: returns a string representation of the pyramid */
 string pyramid::toString(){
     int i = base;
-    int space = 6;
+    const int space = 6;
     stringstream s;
 
     for(auto& row : data){
-        s.width( (i--) * ((space+1) / 2 ) ), s << ' ';
-        forn(i, row.size()){
+        s.width( (i--) * ((space+1) / 2 ) ); s << ' ';
+        forn(i, row.size())
             s.width( space ), s<<row[i].get();
-        }
         s<<endl;
     }
     return s.str();
