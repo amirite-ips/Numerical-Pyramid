@@ -38,23 +38,25 @@ class pyramid{
         }
         bool isSolved();
         bool solve();
-        bool isValid(int x, int y);
+
         string toString();
         cell& at(int x, int y);
 
     private:
-        int base;
-        // given the current known cell 'c', k = c+(dx[i] ,dy[i]) and p = c+(dx[i+1] ,dy[i+1])
+        bool isValid(int x, int y);
+        // given the current known cell 'c', k = c+(dx[i] ,dy[i]) and
+        // p = c+(dx[i+1] ,dy[i+1])
         // you can update k with p-c if p is known
         // otherwise, if k is known, then update p with k+c
-        vector<int> dx = {0, -1, 0, -1};
-        vector<int> dy = {-1, -1, 1, 0};
+        int base;
+        const vector<int> dx = {0, -1, 0, -1};
+        const vector<int> dy = {-1, -1, 1, 0};
         vector<vector<cell>> data;
 };
 
 /// MAIN FUNCTION
 int main(){
-    int n = 6;
+    int n = 4;
     pyramid *A = new pyramid(n);
 /**
     forn(i, n)
@@ -64,6 +66,12 @@ int main(){
         for(int e = 0; e <= i; ++e)
             A->at(i, e).set( A->at(i+1,e).get() + A->at(i+1,e+1).get() );
 **/
+
+    A->at(1,0).set(40);
+    A->at(2,2).set(20);
+    A->at(3,1).set(10);
+    A->at(3,2).set(10);
+
     A->solve();
     cout<<"The pyramid is "<<( A->isSolved() ? "" : "not " )<<"solved"<<endl;
     cout<<A->toString()<<endl;
@@ -109,11 +117,12 @@ bool pyramid::isSolved(){
 
 bool pyramid::solve(){
     queue<cell*> Q;
+    int x, y;
+
     for(auto &row : data)
         for(auto &c : row)
             if( c.isUnknown() == false ) Q.push( &c );
 
-    int x, y;
     while( Q.size() ){
         cell *c = Q.front();
         tie(x, y) = c->getCoordinates();
