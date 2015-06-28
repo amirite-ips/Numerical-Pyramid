@@ -48,7 +48,7 @@ class pyramid{
 
 /// MAIN FUNCTION
 int main(){
-    int n = 6;
+    int n = 13;
     pyramid *A = new pyramid(n);
 
     forn(i, n)
@@ -117,14 +117,16 @@ bool pyramid::solve(){
 
 /* toString: returns a string representation of the pyramid */
 string pyramid::toString(){
-    int i = base;
+    int b = base;
     const int space = 6;
     stringstream s;
 
     for(auto& row : data){
-        s.width( (i--) * ((space+1) / 2 ) ); s << ' ';
-        forn(i, row.size())
-            s.width( space ), s<<row[i].get();
+        s.width( (b--) * ((space+1) / 2 ) ); //s << ' '; can't tell the diff.?
+        forn(i, row.size()){
+            if( i ) s.width( space );
+            s<<row[i].get();
+        }
         s<<endl;
     }
     return s.str();
