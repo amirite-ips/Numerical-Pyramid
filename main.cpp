@@ -48,13 +48,18 @@ class pyramid{
 
 /// MAIN FUNCTION
 int main(){
-    int n = 9;
+    int n = 6;
     pyramid *A = new pyramid(n);
 
     forn(i, n)
     A->at(n-1, i).set(i+1);
 
-    cout<<"The pyramid is "<<( A->isSolved() ? "" : "not" )<<" solved"<<endl;
+    for(int i = n-2; i>=0; --i)
+        for(int e = 0; e <= i; ++e)
+            A->at(i, e).set( A->at(i+1,e).get() + A->at(i+1,e+1).get() );
+
+    cout<<"The pyramid is "<<( A->isSolved() ? "" : "not " )<<"solved"<<endl;
+
     cout<<A->toString()<<endl;
 
     return 0;
@@ -89,8 +94,8 @@ bool pyramid::isSolved(){
         for(auto &c : row){
             if( c.isUnknown() ) return false;
             tie(x, y) = c.getCoordinates();
-            if( x < base )
-                if( c.get() != this->at(x+1,y).get() + this->at(x+1,y+1).get() )
+            if( x < base-1 )
+                if( c.get() != at(x+1,y).get() + at(x+1,y+1).get() )
                     return false;
         }
     return true;
