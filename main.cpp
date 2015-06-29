@@ -38,28 +38,34 @@ class pyramid{
         }
         bool isSolved();
         bool solve();
+        bool isValid(int x, int y);
         string toString();
         cell& at(int x, int y);
 
     private:
         int base;
+        // given the current known cell 'c', k = c+(dx[i] ,dy[i]) and p = c+(dx[i+1] ,dy[i+1])
+        // you can update k with p-c if p is known
+        // otherwise, if k is known, then update p with k+c
+        vector<int> dx = {0, -1, 0, -1};
+        vector<int> dy = {-1, -1, 1, 0};
         vector<vector<cell>> data;
 };
 
 /// MAIN FUNCTION
 int main(){
-    int n = 13;
+    int n = 6;
     pyramid *A = new pyramid(n);
-
+/**
     forn(i, n)
     A->at(n-1, i).set(i+1);
 
     for(int i = n-2; i>=0; --i)
         for(int e = 0; e <= i; ++e)
             A->at(i, e).set( A->at(i+1,e).get() + A->at(i+1,e+1).get() );
-
+**/
+    A->solve();
     cout<<"The pyramid is "<<( A->isSolved() ? "" : "not " )<<"solved"<<endl;
-
     cout<<A->toString()<<endl;
 
     return 0;
@@ -105,13 +111,31 @@ bool pyramid::solve(){
     queue<cell*> Q;
     for(auto &row : data)
         for(auto &c : row)
-            if( !c.isUnknown() ) Q.push( &c );
+            if( c.isUnknown() == false ) Q.push( &c );
 
     int x, y;
     while( Q.size() ){
         cell *c = Q.front();
         tie(x, y) = c->getCoordinates();
 
+        forn(i, dx.size()){
+            if( isValid(x+dx[i], y+dy[i]) ){
+                cell *k = &data[ x+dx[i] ][ y+dy[i] ];
+                cell *p = &data[ x+dx[i+1] ][ y+dy[i+1] ];
+
+                if( k->isUnknown() == false ){
+                    p->set( c->get() + k->get() );
+                    Q.push( p );
+                }
+                else if( p->isUnknown() == false ){
+                    k->set( p->get() - c->get());
+                    Q.push( k );
+                }
+            }
+            i++;
+        }
+
+        Q.pop();
     }
 }
 
@@ -130,6 +154,13 @@ string pyramid::toString(){
         s<<endl;
     }
     return s.str();
+}
+
+bool pyramid::isValid(int x, int y){
+    if( x<0 || x>=base ) return false;
+    if( y<0 || y>=data[x].size() ) return false;
+
+    return true;
 }
 
 /* at: returns a reference of the cell appointed by row x, column y */
